@@ -1,21 +1,22 @@
-name: Crear EXE
+name: Crear EXE 32-bits
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # Esto permite ejecutarlo manualmente con un botón
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4 # Actualizado a v4
+    - uses: actions/checkout@v4
 
-    - name: Instalar Python
-      uses: actions/setup-python@v5 # Actualizado a v5
+    - name: Instalar Python 32-bits
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10' 
+        architecture: 'x86' # <--- ESTO FUERZA LA VERSIÓN DE 32 BITS
 
     - name: Instalar Dependencias
       run: |
@@ -24,12 +25,13 @@ jobs:
 
     - name: Crear EXE
       run: |
-        # Si tienes icono usa: pyinstaller --noconsole --onefile --icon=icon.ico ip_finder.pyw
+        # PyInstaller detectará automáticamente que el Python es de 32 bits
+        # y creará un exe compatible con x86 (32 bits) y x64.
         pyinstaller --noconsole --onefile ip_finder.pyw
 
     - name: Subir el resultado
-      uses: actions/upload-artifact@v4 # <--- AQUÍ ESTABA EL ERROR (Corregido a v4)
+      uses: actions/upload-artifact@v4
       with:
-        name: IP-Finder-App
+        name: IP-Finder-32bit
         path: dist/ip_finder.exe
-        compression-level: 0 # Opcional: hace la subida más rápida
+        compression-level: 0
